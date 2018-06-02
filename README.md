@@ -1,4 +1,5 @@
 This is the official Caffe implementation of [Learning  Deep  NBNN  Representations  for  Robust  Place  Categorization](https://ieeexplore.ieee.org/document/7930504/). 
+This code requires the installation of [NVIDIA/caffe](https://github.com/BVLC/caffe).
 
 ## Content
 
