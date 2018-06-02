@@ -1,0 +1,94 @@
+layer {
+  name: "classifier-1"
+  type: "Convolution"
+  bottom: "input"
+  top: "classifier-1"
+  param {
+    name: "wp"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "bp"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: %KxCLASSES%
+    kernel_size: 1
+    stride: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+  }
+}
+layer {
+  name: "relu8t"
+  type: "ReLU"
+  bottom: "classifier-1"
+  top: "classifier-1"
+}
+layer {
+  name: "classifier-1-q"
+  type: "Power"
+  bottom: "classifier-1"
+  top: "classifier-1-q"
+  power_param {
+    power: %Q%
+    scale: 1.0
+    shift: 0.0
+  }
+}
+layer {
+  name: "classifier-eltsum"
+  type: "Convolution"
+  bottom: "classifier-1-q"
+  top: "classifier-eltsum"
+  param {
+    lr_mult: 0.0
+    decay_mult: 0.0
+  }
+  param {
+    lr_mult: 0.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: %CLASSES%
+    kernel_size: 1
+    group: %CLASSES%
+    weight_filler {
+      type: "constant"
+      value: 1.0
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "classifier-radq"
+  type: "Power"
+  bottom: "classifier-eltsum"
+  top: "classifier-radq"
+  power_param {
+    power: %1/Q%
+    scale: 1.0
+    shift: 0.0
+  }
+}
+layer {
+  name: "score"
+  type: "Reduction"
+  bottom: "classifier-radq"
+  top: "scorer"
+  reduction_param {
+    operation: MEAN
+    axis: 2
+  }
+}
