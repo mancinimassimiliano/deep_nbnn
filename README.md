@@ -1,6 +1,6 @@
 This is the official Caffe implementation of [Learning  Deep  NBNN  Representations  for  Robust  Place  Categorization](https://ieeexplore.ieee.org/document/7930504/). 
 
-# Content
+## Content
 
 Here we provide 4 files:
 
